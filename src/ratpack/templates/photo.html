@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  img {
+    max-width: 50%;
+  }
+</style>
+</head>
+<body>
+<h1>$model.name</h1>
+<hr>
+<a href="/">&larr; Back</a>
+&nbsp;&nbsp;
+<a href="#" id="deleteBtn">x Delete</a>
+<hr>
+<img src="/photo/$model.name">
+<script>
+  (function() {
+    var deleteBtn = document.querySelector("#deleteBtn");
+    deleteBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      var xhr = new XMLHttpRequest();
+      xhr.open("DELETE", "/photo/delete/$model.name", true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 204) {
+          alert("Deleted.");
+          window.location.href = '/';
+        }
+      };
+      xhr.send("");
+    }, false);
+  })();
+</script>
+</body>
+</html>
