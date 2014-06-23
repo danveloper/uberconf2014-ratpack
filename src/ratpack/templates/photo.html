@@ -1,27 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-  img {
-    max-width: 50%;
-  }
-</style>
-</head>
-<body>
-<h1>$model.name</h1>
+<% render '_head.html' %>
+<div class="photoShow">
+<h1>$model.photo.name</h1>
 <hr>
 <a href="/">&larr; Back</a>
 &nbsp;&nbsp;
 <a href="#" id="deleteBtn">x Delete</a>
 <hr>
-<img src="/photo/$model.name">
+<img src="data:image/png;base64,$model.photo.base64">
+</div>
 <script>
   (function() {
     var deleteBtn = document.querySelector("#deleteBtn");
     deleteBtn.addEventListener("click", function(e) {
       e.preventDefault();
       var xhr = new XMLHttpRequest();
-      xhr.open("DELETE", "/photo/delete/$model.name", true);
+      xhr.open("DELETE", "/photo/delete/$model.photo.id", true);
       xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 204) {
           alert("Deleted.");
@@ -32,5 +25,4 @@
     }, false);
   })();
 </script>
-</body>
-</html>
+<% render '_foot.html' %>

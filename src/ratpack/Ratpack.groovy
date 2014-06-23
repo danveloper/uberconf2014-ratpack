@@ -1,6 +1,7 @@
 import ratpack.form.Form
-import uberconf.model.PhotoService
-import uberconf.services.DefaultPhotoService
+import ratpack.groovy.sql.SqlModule
+import ratpack.hikari.HikariModule
+import uberconf.model.*
 
 
 import static ratpack.groovy.Groovy.groovyTemplate
@@ -8,44 +9,55 @@ import static ratpack.groovy.Groovy.ratpack
 
 ratpack {
   bindings {
-    bind PhotoService, new DefaultPhotoService()
+    add new HikariModule([URL: "jdbc:h2:mem:dev;INIT=CREATE SCHEMA IF NOT EXISTS DEV"], "org.h2.jdbcx.JdbcDataSource")
+    add new SqlModule()
+    add new PhotoModule()
+
+    init { PhotoDB photoDB ->
+      photoDB.createTable()
+    }
   }
 
   handlers {
-
-    handler {
-      if (request.headers.'User-Agent' ==~ /.*Chrome.*/) {
-        response.status 418
-        response.send 'text/html', "<h1>You're not welcome here, Chrome.</h1>"
-      } else {
-        next()
-      }
-    }
-
     prefix("photo") {
       post { PhotoService photoService ->
         def form = parse(Form)
-        def name = photoService.save(form.file("photo"))
-        redirect "/show/$name"
-      }
-      get(":name") { PhotoService photoService ->
-        response.sendFile context, photoService.get(pathTokens.name)
-      }
-      delete("delete/:name") { PhotoService photoService ->
+        def file = form.file("photo")
         blocking {
-          photoService.delete(pathTokens.name)
+          def photo = new Photo(null, file.fileName, file.bytes)
+          photoService.save(photo)
+        } then { Photo photo ->
+          redirect "/show/${photo.id}"
+        }
+      }
+      delete("delete/:id") { PhotoService photoService ->
+        blocking {
+          photoService.get(pathTokens.asLong("id"))
         } onError {
           response.status 500
           response.send()
-        } then {
-          response.status 204
+        } then { Photo photo ->
+          if (photo) {
+            photoService.delete(photo)
+            response.status 204
+          } else {
+            response.status 404
+          }
           response.send()
         }
       }
     }
 
-    get("show/:name") {
-      render groovyTemplate("photo.html", name: pathTokens.name)
+    get("show/:id") { PhotoService photoService ->
+      blocking {
+        photoService.get(pathTokens.asLong("id"))
+      } then { Photo photo ->
+        render photo
+      }
+    }
+
+    get { PhotoService photoService ->
+      render groovyTemplate("landing.html", photos: photoService.all())
     }
 
     assets "public"

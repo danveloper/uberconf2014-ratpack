@@ -1,0 +1,19 @@
+.photoRow {
+    list-style-type: none;
+    padding: 0;
+}
+.photoRow li {
+    height: 150px;
+    width: 150px;
+    margin-right: 10px;
+    padding: 10px;
+    border: 1px solid #000;
+    display: inline-block;
+    float: left;
+}
+.photoRow li img {
+    max-width: 100%;
+}
+.photoShow img {
+    max-width: 50%;
+}

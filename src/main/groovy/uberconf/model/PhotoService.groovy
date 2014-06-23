@@ -9,23 +9,30 @@ import ratpack.form.UploadedFile
 public interface PhotoService {
 
   /**
+   * Gets all the photos
+   *
+   * @return a set of all the photos
+   */
+  Set<Photo> all()
+
+  /**
    * Saves the file and returns the file name
    *
    * @param f
-   * @return the file name
+   * @return the photo object w/ id
    */
-  String save(UploadedFile f)
+  Photo save(Photo photo)
 
   /**
-   * Retrieves a file by name
+   * Retrieves a photo by id
    *
-   * @param name
-   * @return the file
+   * @param id
+   * @return the photo
    */
-  Path get(String name)
+  Photo get(Long id)
 
   /**
-   * Deletes a named file
+   * Deletes a photo
    */
-  void delete(String name)
+  void delete(Photo photo)
 }

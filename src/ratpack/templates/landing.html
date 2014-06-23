@@ -1,0 +1,16 @@
+<% render '_head.html' %>
+<h1>Send me a file!</h1>
+<form action="/photo" method="POST" enctype="multipart/form-data">
+  <input name="photo" type="file">
+  <input type="submit">
+</form>
+<ul class="photoRow">
+<% for (photo in model.photos) { %>
+  <li>
+        <a href="/show/$photo.id">
+          <img title="$photo.name" src="data:image/png;base64,$photo.base64">
+        </a>
+  </li>
+<% } %>
+</ul>
+<% render '_foot.html' %>

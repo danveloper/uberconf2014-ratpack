@@ -1,37 +1,45 @@
 package uberconf.services
 
-import java.nio.file.Files
-import java.nio.file.Path
-import ratpack.form.UploadedFile
-import uberconf.model.PhotoService
+import com.google.inject.Inject
+import groovy.sql.GroovyRowResult
+import groovy.transform.CompileStatic
+import org.h2.jdbc.JdbcBlob
+import uberconf.model.*
 
-
-import static java.nio.file.Files.write
-
+@CompileStatic
 class DefaultPhotoService implements PhotoService {
-  private static final PREFIX = "ratpack-"
-  private static final SUFFIX = ".jpg"
-  final Path tmpDir = File.createTempDir().toPath()
+  private final PhotoDB photoDB
 
-  @Override
-  String save(UploadedFile f) {
-    Path dest = Files.createTempFile(tmpDir, PREFIX, SUFFIX)
-    write dest, f.bytes fileName
-    dest.fileName.toString().replaceAll("^${PREFIX}", "").replaceAll("${SUFFIX}\$", "")
+  @Inject
+  DefaultPhotoService(PhotoDB photoDB) {
+    this.photoDB = photoDB
   }
 
   @Override
-  Path get(String name) {
-    tmpDir.resolve getFileName(name)
+  Set<Photo> all() {
+    photoDB.all().collect {
+      map it
+    } as Set
   }
 
   @Override
-  void delete(String name) {
-    def path = tmpDir.resolve getFileName(name)
-    Files.delete(path)
+  Photo save(Photo photo) {
+    Long id = photoDB.save(photo.name, photo.data)
+    photo.id = id
+    photo
   }
 
-  private static String getFileName(String name) {
-    "${PREFIX}${name}${SUFFIX}"
+  @Override
+  Photo get(Long id) {
+    map photoDB.findOne(id)
+  }
+
+  @Override
+  void delete(Photo photo) {
+    photoDB.remove(photo.id)
+  }
+
+  private static Photo map(GroovyRowResult row) {
+    new Photo(row.ID as Long, row.NAME as String, ((JdbcBlob)row.DATA).binaryStream.bytes)
   }
 }
