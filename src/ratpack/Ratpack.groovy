@@ -2,6 +2,7 @@ import ratpack.form.Form
 import ratpack.groovy.sql.SqlModule
 import ratpack.hikari.HikariModule
 import ratpack.launch.LaunchConfig
+import ratpack.remote.RemoteControlModule
 import uberconf.model.*
 
 
@@ -13,6 +14,7 @@ ratpack {
     add new HikariModule([URL: "jdbc:h2:mem:dev;INIT=CREATE SCHEMA IF NOT EXISTS DEV"], "org.h2.jdbcx.JdbcDataSource")
     add new SqlModule()
     add new PhotoModule()
+    add new RemoteControlModule()
 
     init { PhotoDB photoDB ->
       photoDB.createTable()
