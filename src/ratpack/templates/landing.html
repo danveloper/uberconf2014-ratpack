@@ -1,8 +1,8 @@
 <% render '_head.html' %>
-<h1>Send me a file!</h1>
-<form action="/photo" method="POST" enctype="multipart/form-data">
-  <input name="photo" type="file">
-  <input type="submit">
+<div class="landing">
+<a href="#" id="newPhotoBtn" class="btn btn-large btn-primary">Add Your Photo!</a>
+<form action="/photo" id="newPhotoForm" method="POST" enctype="multipart/form-data">
+  <input name="photo" id="newPhotoFile" type="file">
 </form>
 <ul class="photoRow">
 <% for (photo in model.photos) { %>
@@ -13,4 +13,5 @@
   </li>
 <% } %>
 </ul>
+</div>
 <% render '_foot.html' %>

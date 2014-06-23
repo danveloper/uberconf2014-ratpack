@@ -1,6 +1,7 @@
 import ratpack.form.Form
 import ratpack.groovy.sql.SqlModule
 import ratpack.hikari.HikariModule
+import ratpack.launch.LaunchConfig
 import uberconf.model.*
 
 
@@ -56,8 +57,8 @@ ratpack {
       }
     }
 
-    get { PhotoService photoService ->
-      render groovyTemplate("landing.html", photos: photoService.all())
+    get { PhotoService photoService, LaunchConfig launchConfig ->
+      render groovyTemplate("landing.html", photos: photoService.all(), client: launchConfig.getOther("client", "default"))
     }
 
     assets "public"

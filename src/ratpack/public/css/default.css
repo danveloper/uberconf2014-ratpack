@@ -16,4 +16,14 @@
 }
 .photoShow img {
     max-width: 50%;
+    margin: 0 auto;
+}
+.navbar-brand img {
+    height: 25px;
+}
+#newPhotoForm {
+    opacity: 0;
+}
+.landing {
+    padding-top: 50px;
 }
