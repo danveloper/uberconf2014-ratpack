@@ -20,6 +20,7 @@ dependencies {
   springloaded 'org.springsource.loaded:springloaded:1.1.5.RELEASE'
   compile ratpack.dependency("h2")
   compile ratpack.dependency("hikari")
+  compile ratpack.dependency("remote")
   testCompile ratpack.dependency("remote-test")
   testCompile "org.spockframework:spock-core:0.7-groovy-2.0", {
     exclude module: "groovy-all"
