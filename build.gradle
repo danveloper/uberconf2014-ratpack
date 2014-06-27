@@ -29,3 +29,8 @@ dependencies {
 }
 
 configurations.testCompile.dependencies.find { it.name == "ratpack-groovy-test" }.exclude(group: "org.codehaus.groovy")
+
+//prep for heroku deployment
+task stage {
+  dependsOn installApp
+}
